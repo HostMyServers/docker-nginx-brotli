@@ -61,7 +61,7 @@ jobs:
 
       - name: Test
         run: |
-          docker run --rm -v $(pwd)/tests.sh:/tests.sh --entrypoint sh ${{ env.IMAGE_NAME }} /tests.sh
+          docker run --rm -v $(pwd)/tests.sh:/tests.sh --entrypoint sh ${{ fromJSON(steps.meta.outputs.json).tags[0] }} /tests.sh
 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v3
