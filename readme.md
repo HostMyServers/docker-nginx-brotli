@@ -158,3 +158,21 @@ services:
 - **`quic_gso on/off`**: Enable optimized batch sending on Linux (default: off)
 
 For more details, see the [official nginx HTTP/3 documentation](https://nginx.org/en/docs/http/ngx_http_v3_module.html).
+
+## License
+
+This project is licensed under the **Apache License 2.0**.
+
+### What this covers
+
+- The license applies to the Dockerfile and build configuration in this repository
+- It does not cover nginx itself (which has its own license) or the base Alpine Linux distribution
+- This project is based on the official nginx Docker image, which is also licensed under Apache 2.0
+
+### Usage
+
+You are free to:
+- Use this Docker image from Docker Hub (`FROM` this image in your own Dockerfile)
+- Modify and distribute the Dockerfile with proper attribution
+
+See the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) for full terms.
