@@ -8,15 +8,20 @@ on:
       - mainline
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+  release:
+    types: [published]
 
 env:
-  IMAGE_NAME: fholzer/nginx-brotli
+  REGISTRY: docker.io
+  IMAGE_NAME: titin/nginx-brotli
 
 jobs:
   build-test-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Docker meta
         id: meta
@@ -28,6 +33,7 @@ jobs:
           tags: |
             type=raw,priority=1000,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
             type=raw,priority=1000,value=mainline-latest,enable=${{ github.ref == 'refs/heads/mainline' }}
+            type=raw,priority=600,value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
             type=match,priority=600,pattern=^(v\d+\.\d+\.\d+)$,group=0
 
       - name: Set up QEMU
@@ -57,13 +63,13 @@ jobs:
         run: |
           docker run --rm -v $(pwd)/tests.sh:/tests.sh --entrypoint sh ${{ env.IMAGE_NAME }} /tests.sh
 
-      - name: Login to Docker Hub
+      - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
 
       - name: Build and publish multi-platform images
         uses: docker/build-push-action@v5.0.0
